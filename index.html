@@ -40,8 +40,15 @@
     <div class="vote-grid"><button id="doneVote">✅ 완료</button><button id="delayVote">⏰ 지연</button></div>
     <p id="voteState" class="muted">제출 상태를 확인 중입니다.</p>
   </div>
-  <div class="card">
-    <h3>맞팔분석</h3><p class="muted">맞팔확인 기간 중에만 이용할 수 있어요.</p>
+  <div id="analysisCard" class="card period-locked-card">
+    <div class="row">
+      <div>
+        <h3>맞팔분석</h3>
+        <p id="analysisPeriodText" class="muted">현재 맞팔확인 기간이 아닙니다.</p>
+      </div>
+      <span id="analysisBadge" class="badge">기간 아님</span>
+    </div>
+    <div id="analysisLockedGuide" class="period-lock-guide">🔒 맞팔확인 기간이 시작되면 맞팔분석도 함께 열립니다.</div>
     <input id="zipInput" type="file" accept=".zip" disabled>
     <button id="analyzeBtn" class="primary" disabled>맞팔 분석 시작</button>
     <div id="analysisResult"></div>
