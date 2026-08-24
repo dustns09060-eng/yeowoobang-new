@@ -120,3 +120,12 @@ body.dark{
 }
 body.dark header,body.dark nav{background:rgba(33,29,34,.95)}
 body.dark .header-actions button{background:#2a2328;border-color:#3a3036;color:#fff}
+
+/* V1.3 운영진 분리/표시 */
+#adminBtn{
+  color:#b33f69!important;
+  font-weight:900!important;
+  border-color:#f2cad8!important;
+  background:#fff4f8!important;
+  white-space:nowrap;
+}

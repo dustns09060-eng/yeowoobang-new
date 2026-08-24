@@ -4,7 +4,7 @@ function toast(m){let t=$("#toast");t.textContent=m;t.classList.add("show");setT
 async function api(action,data={}){if(API().includes("PASTE_"))throw Error("config.js에 새 Apps Script /exec 주소를 입력해주세요.");let r=await fetch(API(),{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify({action,...data})});let j=await r.json();if(!j.ok)throw Error(j.message||"요청 실패");return j}
 function norm(v){return String(v||"").trim().replace(/^@+/,"").toLowerCase()}
 async function login(){try{$("#loginBtn").disabled=true;let j=await api("login",{instagramId:norm($("#loginId").value),password:$("#loginPw").value});token=j.token;me=j.member;localStorage.setItem("yw:new:token",token);await enter()}catch(e){$("#loginMsg").textContent=e.message}finally{$("#loginBtn").disabled=false}}
-async function enter(){if(!me){let j=await api("session",{token});me=j.member}$("#loginScreen").classList.add("hidden");$("#app").classList.remove("hidden");$("#adminBtn").classList.toggle("hidden",!me.isStaff);$("#myInfo").innerHTML=`<p><b>${me.nickname}</b></p><p>@${me.instagramId}</p><p>MemberID ${me.memberId}</p><p>권한 ${me.role||"일반회원"}</p>`;let d=await api("bootstrap",{token});members=d.members;period=d.period;renderMembers();renderPeriod();$("#noticeContent").textContent=d.notice||"등록된 공지가 없습니다."}
+async function enter(){if(!me){let j=await api("session",{token});me=j.member}$("#loginScreen").classList.add("hidden");$("#app").classList.remove("hidden");$("#adminBtn").classList.toggle("hidden",!me.isStaff);$("#myInfo").innerHTML=`<p><b>${me.nickname}</b></p><p>@${me.instagramId}</p>${String(me.memberId||"").startsWith("STAFF:")?"":`<p>MemberID ${me.memberId}</p>`}<p>권한 ${me.role||"일반회원"}</p>`;let d=await api("bootstrap",{token});members=d.members;period=d.period;renderMembers();renderPeriod();$("#noticeContent").textContent=d.notice||"등록된 공지가 없습니다."}
 async function restore(){if(!token)return;try{let j=await api("session",{token});me=j.member;await enter()}catch(e){localStorage.removeItem("yw:new:token");token=""}}
 function renderMembers(){let q=norm($("#searchInput").value), list=members.filter(x=>!q||String(x.no).includes(q)||x.nickname.toLowerCase().includes(q)||x.instagramId.includes(q));$("#followList").innerHTML=list.map((x,i)=>`<div class="member ${x.no<=progress?"done":""}"><div><b>${x.no}. ${x.nickname}</b><br><small>@${x.instagramId}</small></div><a href="https://www.instagram.com/${x.instagramId}/" target="_blank" rel="noopener">인스타</a></div>`).join("");let pct=members.length?Math.min(100,Math.round(progress/members.length*100)):0;$("#progressText").textContent=`진행률 ${pct}% · ${progress}/${members.length}`}
 function renderPeriod(){
@@ -14,11 +14,13 @@ function renderPeriod(){
   // 맞팔투표
   $("#matchBadge").textContent=open?"진행중":"기간 아님";
   $("#matchPeriodText").textContent=label;
-  $("#doneVote").disabled=!open;
-  $("#delayVote").disabled=!open;
-  $("#voteState").textContent=period?.myVote
-    ? `제출 완료: ${period.myVote}`
-    : (open?"완료 또는 지연을 선택해주세요.":"기간이 시작되면 투표할 수 있어요.");
+  $("#doneVote").disabled=!open || !!me?.isStaff;
+  $("#delayVote").disabled=!open || !!me?.isStaff;
+  $("#voteState").textContent=me?.isStaff
+    ? "운영진 계정은 맞팔투표 대상이 아닙니다."
+    : (period?.myVote
+      ? `제출 완료: ${period.myVote}`
+      : (open?"완료 또는 지연을 선택해주세요.":"기간이 시작되면 투표할 수 있어요."));
 
   // 맞팔분석 - 맞팔투표와 동일한 기간을 사용
   $("#analysisBadge").textContent=open?"진행중":"기간 아님";

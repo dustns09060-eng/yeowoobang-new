@@ -39,7 +39,7 @@
 <header>
   <div class="brand"><img src="app-icon-192.png" alt="여우방 로고"><b>여우방</b></div>
   <div class="header-actions">
-    <button id="noticeBtn">🔔</button><button id="adminBtn" class="hidden">⚙️ 운영진</button>
+    <button id="noticeBtn">🔔</button><button id="adminBtn" class="hidden">⚙️ 운영진모드</button>
     <button id="themeBtn">🌙</button><button id="menuBtn">⋯</button>
   </div>
 </header>
@@ -82,7 +82,7 @@
 <div id="drawer" class="overlay hidden"><div class="sheet"><div class="row"><h3>내 메뉴</h3><button data-close="drawer">✕</button></div>
 <button id="installAppBtn">📱 앱 설치</button><button id="drawerMy">👤 마이페이지</button><button id="drawerNotice">📢 공지사항</button><button id="changePw">🔐 비밀번호 변경</button><button id="logoutBtn">🚪 로그아웃</button></div></div>
 <div id="noticeModal" class="overlay hidden"><div class="sheet"><div class="row"><h3>📢 공지사항</h3><button data-close="noticeModal">✕</button></div><div id="noticeContent"></div></div></div>
-<div id="adminModal" class="overlay hidden"><div class="sheet"><div class="row"><h3>⚙️ 운영진 인증</h3><button data-close="adminModal">✕</button></div><input id="adminPw" type="password" placeholder="운영진 비밀번호"><button id="adminLogin" class="primary">운영진모드 전환</button><div id="adminMsg" class="msg"></div></div></div>
+<div id="adminModal" class="overlay hidden"><div class="sheet"><div class="row"><h3>⚙️ 운영진모드</h3><button data-close="adminModal">✕</button></div><input id="adminPw" type="password" placeholder="운영진 비밀번호"><button id="adminLogin" class="primary">운영진모드 전환</button><div id="adminMsg" class="msg"></div></div></div>
 <div id="adminPanel" class="overlay hidden"><div class="sheet large"><div class="row"><h3>⚙️ 운영진모드</h3><button data-close="adminPanel">✕</button></div>
 <div class="card inner"><h4>맞팔확인 기간</h4><input id="periodStart" type="datetime-local"><input id="periodEnd" type="datetime-local"><button id="savePeriod" class="primary">기간 저장</button></div>
 <div class="card inner"><h4>맞팔투표 현황</h4><div id="adminStats"></div><div class="row"><button id="copyDelay" class="soft">지연 복사</button><button id="copyMissing" class="soft">미제출 복사</button></div><div id="adminVotes"></div></div>
