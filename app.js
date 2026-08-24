@@ -64,7 +64,7 @@ function renderList(){
       </div>
       <a class="open-btn" href="https://instagram.com/${x.id}/" target="_blank" rel="noopener">↗ 열기</a>
     </div>`).join(""):'<p class="muted empty-result">결과가 없습니다.</p>';
-}. ${x.nickname}</b><a href="https://instagram.com/${x.id}/" target="_blank">@${x.id}</a></div><span class="status ${x.status}">${label(x.status)}</span></div>`).join(""):'<p class="muted">결과가 없습니다.</p>'}
+}
 function mismatchRows(){return result.all.filter(x=>x.status!=="mutual");}
 async function copyMismatch(){
   const rows=mismatchRows();
@@ -81,7 +81,6 @@ async function copyMentions(){
   toast(`@멘션 ${rows.length}명 복사 완료`);
 }
 
-async function copyResult(){const rows=filtered();if(!rows.length)return toast("복사할 결과가 없습니다.");const t=rows.map(x=>`${x.no}. ${x.nickname}\t@${x.id}\t${label(x.status)}`).join("\n");await navigator.clipboard.writeText(t);toast(`${rows.length}명 복사 완료`)}
 
 async function adminLogin(){try{const j=await api("adminLogin",{token,password:$("#adminPw").value});adminToken=j.adminToken;$("#adminAuth").classList.add("hidden");$("#adminPanel").classList.remove("hidden");$("#adminRole").textContent="운영진 인증 완료";$("#periodStart").value=j.period.start||"";$("#periodEnd").value=j.period.end||""}catch(e){$("#adminMsg").textContent=e.message}}
 async function savePeriod(){try{const j=await api("savePeriod",{token,adminToken,start:$("#periodStart").value,end:$("#periodEnd").value});toast(j.message);await boot()}catch(e){toast(e.message)}}
@@ -91,7 +90,7 @@ async function changePw(){try{const j=await api("changeEntryPassword",{token,adm
 $("#copyMismatchBtn").onclick=copyMismatch;
 $("#copyMentionBtn").onclick=copyMentions;
 $("#reanalyzeBtn").onclick=()=>{$("#zipInput").value="";$("#summarySection").classList.add("hidden");$("#analysisStatus").textContent="";window.scrollTo({top:0,behavior:"smooth"});};
-$("#entryBtn").onclick=entry;$("#entryPw").onkeydown=e=>{if(e.key==="Enter")entry()};$("#analyzeBtn").onclick=analyze;$("#resultSearch").oninput=renderList;$("#copyResultBtn").onclick=copyResult;$$("[data-result-tab]").forEach(b=>b.onclick=()=>showTab(b.dataset.resultTab));
+$("#entryBtn").onclick=entry;$("#entryPw").onkeydown=e=>{if(e.key==="Enter")entry()};$("#analyzeBtn").onclick=analyze;$("#resultSearch").oninput=renderList;$$("[data-result-tab]").forEach(b=>b.onclick=()=>showTab(b.dataset.resultTab));
 $("#adminBtn").onclick=()=>$("#adminAuth").classList.remove("hidden");$("#adminLoginBtn").onclick=adminLogin;$("#savePeriodBtn").onclick=savePeriod;$("#saveNoticeBtn").onclick=saveNotice;$("#changeEntryPwBtn").onclick=changePw;
 $("#moreBtn").onclick=()=>$("#moreMenu").classList.remove("hidden");$("#logoutBtn").onclick=()=>{localStorage.removeItem("matchV24Token");location.reload()};$$("[data-close]").forEach(b=>b.onclick=()=>$("#"+b.dataset.close).classList.add("hidden"));
 window.addEventListener("beforeinstallprompt",e=>{e.preventDefault();installPrompt=e});$("#installBtn").onclick=async()=>{if(installPrompt){installPrompt.prompt();await installPrompt.userChoice;installPrompt=null}else alert(/iphone|ipad|ipod/i.test(navigator.userAgent)?"Safari 공유 → 홈 화면에 추가를 눌러주세요.":"브라우저 메뉴에서 앱 설치/홈 화면에 추가를 선택해주세요.")};
