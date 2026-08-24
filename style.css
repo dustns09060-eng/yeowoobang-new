@@ -37,3 +37,95 @@
     border-radius:24px !important;
   }
 }
+
+
+/* V2.6.4 - 분석 결과 요약 한 화면 최적화 */
+#summarySection.result-summary-card{
+  padding:16px 18px !important;
+  margin-top:10px !important;
+}
+#summarySection .summary-title-row{
+  margin-bottom:8px !important;
+}
+#summarySection .summary-title-row h3{
+  font-size:22px !important;
+  line-height:1.15 !important;
+}
+#summarySection .icon-btn{
+  width:38px !important;
+  height:38px !important;
+  font-size:20px !important;
+}
+#summarySection .result-summary-grid{
+  gap:8px !important;
+}
+#summarySection .summary-box{
+  padding:11px 7px !important;
+  min-height:112px !important;
+  display:flex !important;
+  flex-direction:column !important;
+  justify-content:center !important;
+}
+#summarySection .summary-box span{
+  min-height:30px !important;
+  font-size:13px !important;
+  line-height:1.2 !important;
+}
+#summarySection .summary-box b{
+  font-size:27px !important;
+  line-height:1.05 !important;
+  margin:4px 0 2px !important;
+}
+#summarySection .summary-box small{
+  font-size:12px !important;
+}
+#summarySection .match-rate-line{
+  padding:10px 0 4px !important;
+  font-size:13px !important;
+}
+#summarySection .result-tools-new{
+  margin-top:8px !important;
+}
+#summarySection .result-search{
+  padding:11px 12px !important;
+  margin:4px 0 7px !important;
+}
+#summarySection .copy-actions{
+  margin:6px 0 8px !important;
+}
+#summarySection .copy-actions button{
+  padding:8px 11px !important;
+  font-size:12px !important;
+}
+#summarySection .result-tabs{
+  padding-bottom:5px !important;
+}
+#summarySection .result-tabs button{
+  padding:7px 10px !important;
+  font-size:11px !important;
+}
+
+/* 분석 완료 후 업로드 카드도 살짝 컴팩트하게 */
+#analysisCard.analysis-done-compact{
+  padding:14px 18px !important;
+}
+#analysisCard.analysis-done-compact h3{
+  margin:0 0 6px !important;
+}
+#analysisCard.analysis-done-compact .file-box,
+#analysisCard.analysis-done-compact #analyzeBtn{
+  display:none !important;
+}
+#analysisCard.analysis-done-compact #analysisGuide{
+  display:none !important;
+}
+#analysisCard.analysis-done-compact #analysisStatus{
+  margin:0 !important;
+}
+
+@media(max-width:430px){
+  #summarySection.result-summary-card{padding:14px 15px !important}
+  #summarySection .summary-box{min-height:104px !important;padding:9px 6px !important}
+  #summarySection .summary-box b{font-size:25px !important}
+  #summarySection .summary-title-row h3{font-size:21px !important}
+}

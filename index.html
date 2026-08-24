@@ -32,7 +32,7 @@
   <img src="app-icon-192.png" class="login-logo" alt="여우방">
   <h1>여우방</h1><h2>맞팔확인</h2>
   <p>입장 비밀번호를 입력해주세요.</p>
-  <input id="entryPw" type="password" placeholder="입장 비밀번호" autocomplete="current-password">
+  <input id="entryPw" type="password" placeholder="입장 비밀번호" autocomplete="current-password" inputmode="numeric" pattern="[0-9]*" autocomplete="off">
   <button id="entryBtn" class="primary">입장하기</button>
   <p id="entryMsg" class="error"></p>
  </div>
@@ -97,7 +97,7 @@
 <div id="adminAuth" class="overlay hidden">
  <div class="sheet">
   <div class="row"><h3>⚙️ 운영진모드</h3><button data-close="adminAuth">✕</button></div>
-<input id="adminPw" type="password" placeholder="운영진 비밀번호">
+<input id="adminPw" type="password" placeholder="운영진 비밀번호" inputmode="numeric" pattern="[0-9]*" autocomplete="off">
   <button id="adminLoginBtn" class="primary">운영진모드 열기</button>
   <p id="adminMsg" class="error"></p>
  </div>
@@ -123,9 +123,9 @@
   <div class="admin-block">
    <h4>🔐 입장 비밀번호 변경</h4>
    <p class="muted">운영진 비밀번호로 인증한 운영진이라면 변경할 수 있어요.</p>
-   <input id="currentEntryPw" type="password" placeholder="현재 입장 비밀번호">
-   <input id="newEntryPw" type="password" placeholder="새 입장 비밀번호 (4자 이상)">
-   <input id="confirmEntryPw" type="password" placeholder="새 입장 비밀번호 확인">
+   <input id="currentEntryPw" type="password" placeholder="현재 입장 비밀번호" inputmode="numeric" pattern="[0-9]*" autocomplete="off">
+   <input id="newEntryPw" type="password" placeholder="새 입장 비밀번호 (4자 이상)" inputmode="numeric" pattern="[0-9]*" autocomplete="off">
+   <input id="confirmEntryPw" type="password" placeholder="새 입장 비밀번호 확인" inputmode="numeric" pattern="[0-9]*" autocomplete="off">
    <button id="changeEntryPwBtn" class="primary">입장 비밀번호 변경</button>
   </div>
  </div>
