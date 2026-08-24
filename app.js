@@ -47,3 +47,21 @@ $("#doneVote").onclick=()=>vote("완료");$("#delayVote").onclick=()=>vote("지�
 $$("nav button").forEach(b=>b.onclick=()=>view(b.dataset.view));$("#themeBtn").onclick=()=>document.body.classList.toggle("dark");$("#menuBtn").onclick=()=>$("#drawer").classList.remove("hidden");$("#noticeBtn").onclick=()=>$("#noticeModal").classList.remove("hidden");$("#drawerNotice").onclick=()=>{$("#drawer").classList.add("hidden");$("#noticeModal").classList.remove("hidden")};$("#drawerMy").onclick=()=>{$("#drawer").classList.add("hidden");view("myView")};$("#logoutBtn").onclick=()=>{localStorage.removeItem("yw:new:token");location.reload()};$("#changePw").onclick=()=>toast("비밀번호 변경은 통합프로그램 계정과 연동합니다.");
 $("#adminBtn").onclick=()=>$("#adminModal").classList.remove("hidden");$("#adminLogin").onclick=adminLogin;$("#savePeriod").onclick=savePeriod;$("#copyDelay").onclick=()=>copyStatus("지연");$("#copyMissing").onclick=()=>copyStatus("미제출");$$("[data-close]").forEach(b=>b.onclick=()=>$("#"+b.dataset.close).classList.add("hidden"));
 restore();
+
+let deferredInstallPrompt=null;
+window.addEventListener("beforeinstallprompt",(e)=>{
+  e.preventDefault();
+  deferredInstallPrompt=e;
+});
+$("#installAppBtn").onclick=async()=>{
+  if(deferredInstallPrompt){
+    deferredInstallPrompt.prompt();
+    await deferredInstallPrompt.userChoice;
+    deferredInstallPrompt=null;
+    $("#drawer").classList.add("hidden");
+    return;
+  }
+  const isIOS=/iphone|ipad|ipod/i.test(navigator.userAgent);
+  if(isIOS) alert("Safari 하단 공유 버튼 → '홈 화면에 추가'를 눌러주세요.");
+  else alert("브라우저 메뉴에서 '홈 화면에 추가' 또는 '앱 설치'를 선택해주세요.");
+};

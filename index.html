@@ -4,12 +4,29 @@
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#fff7fa">
 <title>여우방 팔로우리스트 · 맞팔확인</title>
+
+<meta name="description" content="여우방 회원 전용 팔로우리스트 · 맞팔확인 프로그램">
+<meta name="application-name" content="여우방">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="여우방">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="96x96" href="favicon-96.png">
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="여우방 팔로우리스트 · 맞팔확인">
+<meta property="og:description" content="여우방 회원 전용 팔로우리스트와 맞팔확인을 한 곳에서 이용해요.">
+<meta property="og:image" content="https://dustns09060-eng.github.io/yeowoobang-new/kakao-preview.png">
+<meta property="og:url" content="https://dustns09060-eng.github.io/yeowoobang-new/">
+<meta property="og:site_name" content="여우방">
+<meta property="og:locale" content="ko_KR">
+
 <link rel="manifest" href="manifest.json"><link rel="stylesheet" href="style.css">
 </head>
 <body>
 <div id="loginScreen" class="login-screen">
   <div class="login-card">
-    <div class="fox">🦊</div><h1>여우방</h1><p>팔로우리스트 · 맞팔확인</p>
+    <img class="login-logo" src="app-icon-192.png" alt="여우방 로고"><h1>여우방</h1><p>팔로우리스트 · 맞팔확인</p>
     <input id="loginId" autocomplete="username" placeholder="인스타 아이디">
     <input id="loginPw" type="password" autocomplete="current-password" placeholder="비밀번호">
     <button id="loginBtn" class="primary">로그인</button>
@@ -20,7 +37,7 @@
 
 <div id="app" class="hidden">
 <header>
-  <div class="brand"><span>🦊</span><b>여우방</b></div>
+  <div class="brand"><img src="app-icon-192.png" alt="여우방 로고"><b>여우방</b></div>
   <div class="header-actions">
     <button id="noticeBtn">🔔</button><button id="adminBtn" class="hidden">⚙️ 운영진</button>
     <button id="themeBtn">🌙</button><button id="menuBtn">⋯</button>
@@ -63,7 +80,7 @@
 </div>
 
 <div id="drawer" class="overlay hidden"><div class="sheet"><div class="row"><h3>내 메뉴</h3><button data-close="drawer">✕</button></div>
-<button id="drawerMy">👤 마이페이지</button><button id="drawerNotice">📢 공지사항</button><button id="changePw">🔐 비밀번호 변경</button><button id="logoutBtn">🚪 로그아웃</button></div></div>
+<button id="installAppBtn">📱 앱 설치</button><button id="drawerMy">👤 마이페이지</button><button id="drawerNotice">📢 공지사항</button><button id="changePw">🔐 비밀번호 변경</button><button id="logoutBtn">🚪 로그아웃</button></div></div>
 <div id="noticeModal" class="overlay hidden"><div class="sheet"><div class="row"><h3>📢 공지사항</h3><button data-close="noticeModal">✕</button></div><div id="noticeContent"></div></div></div>
 <div id="adminModal" class="overlay hidden"><div class="sheet"><div class="row"><h3>⚙️ 운영진 인증</h3><button data-close="adminModal">✕</button></div><input id="adminPw" type="password" placeholder="운영진 비밀번호"><button id="adminLogin" class="primary">운영진모드 전환</button><div id="adminMsg" class="msg"></div></div></div>
 <div id="adminPanel" class="overlay hidden"><div class="sheet large"><div class="row"><h3>⚙️ 운영진모드</h3><button data-close="adminPanel">✕</button></div>
@@ -72,4 +89,10 @@
 </div></div>
 <div id="toast" class="toast"></div>
 <script src="config.js"></script><script src="app.js"></script>
+
+<script>
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => navigator.serviceWorker.register("./sw.js").catch(()=>{}));
+}
+</script>
 </body></html>
