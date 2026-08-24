@@ -56,21 +56,34 @@
    <p id="analysisStatus" class="muted"></p>
   </section>
 
-  <section id="summarySection" class="card hidden">
-   <h3>분석 결과</h3>
-   <div class="summary-grid">
-    <button data-result-tab="all"><b id="allCount">0</b><span>전체</span></button>
-    <button data-result-tab="mutual"><b id="mutualCount">0</b><span>맞팔</span></button>
-    <button data-result-tab="onlyMe"><b id="onlyMeCount">0</b><span>나만 팔로우</span></button>
-    <button data-result-tab="fansOnly"><b id="fansOnlyCount">0</b><span>상대만 팔로우</span></button>
-    <button data-result-tab="neither"><b id="neitherCount">0</b><span>서로 미팔로우</span></button>
-   </div>
-   <div class="result-tools">
-    <input id="resultSearch" placeholder="닉네임 · 인스타 아이디 검색">
-    <button id="copyResultBtn">현재 결과 복사</button>
-   </div>
-   <div id="resultList"></div>
-  </section>
+  <section id="summarySection" class="card hidden result-summary-card">
+  <div class="summary-title-row">
+    <h3>분석 결과 요약</h3>
+    <button id="reanalyzeBtn" class="icon-btn">↻</button>
+  </div>
+  <div class="summary-grid four">
+    <div class="summary-box mutual-box"><span>맞팔 완료</span><b id="mutualCount">0명</b><small id="mutualPct">0%</small></div>
+    <div class="summary-box onlyme-box"><span>나만 팔로우 함</span><b id="onlyMeCount">0명</b><small id="onlyMePct">0%</small></div>
+    <div class="summary-box fansonly-box"><span>상대가 팔로우만 함</span><b id="fansOnlyCount">0명</b><small id="fansOnlyPct">0%</small></div>
+    <div class="summary-box neither-box"><span>서로 팔로우 안 함</span><b id="neitherCount">0명</b><small id="neitherPct">0%</small></div>
+  </div>
+  <div id="matchRateLine" class="match-rate-line">단톡방 맞팔률 0% · 0/0명</div>
+  <div class="result-list-card">
+    <input id="resultSearch" class="result-search" placeholder="⌕ 아이디 또는 닉네임 검색">
+    <div class="copy-actions">
+      <button id="copyMismatchBtn">미맞팔 복사</button>
+      <button id="copyMentionBtn">@멘션 복사</button>
+    </div>
+    <div class="result-tabs">
+      <button data-result-tab="all" class="active">전체 <span id="allTabCount">0</span></button>
+      <button data-result-tab="mutual">맞팔 <span id="mutualTabCount">0</span></button>
+      <button data-result-tab="onlyMe">나만 팔로우 <span id="onlyMeTabCount">0</span></button>
+      <button data-result-tab="fansOnly">상대만 팔로우 <span id="fansOnlyTabCount">0</span></button>
+      <button data-result-tab="neither">서로 미팔로우 <span id="neitherTabCount">0</span></button>
+    </div>
+    <div id="resultList"></div>
+  </div>
+</section>
 
   <section class="card notice-card">
    <h3>📢 공지</h3>

@@ -1,0 +1,15 @@
+V2.2 카카오톡 미리보기 수정
+
+미리보기 이름: 여우방 맞팔확인
+OG URL: https://dustns09060-eng.github.io/ys/
+OG 이미지: https://dustns09060-eng.github.io/ys/kakao-preview.png
+이미지 크기: 1200 x 630 PNG
+
+적용:
+1. GitHub 저장소의 기존 파일을 V2.2 GitHub ZIP 내용으로 전체 교체
+2. GitHub Pages 배포가 완료될 때까지 잠시 기다림
+3. 카카오톡에서 링크를 다시 전송
+
+중요:
+카카오는 이전 링크의 미리보기를 캐시할 수 있습니다.
+파일을 바꾼 직후에도 예전 미리보기/이미지 없음 상태가 잠시 남을 수 있습니다.

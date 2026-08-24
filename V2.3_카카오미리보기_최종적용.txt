@@ -1,0 +1,34 @@
+여우방 맞팔확인 V2.3 카카오 미리보기 최종 수정
+
+실제 GitHub Pages 주소
+https://dustns09060-eng.github.io/yeowoobang-new/
+
+카카오 미리보기 이름
+여우방 맞팔확인
+
+카카오 미리보기 이미지
+https://dustns09060-eng.github.io/yeowoobang-new/kakao-preview.png
+
+수정된 항목
+- title
+- description
+- canonical
+- og:site_name
+- og:title
+- og:description
+- og:url
+- og:image
+- og:image:secure_url
+- og:image:alt
+- twitter:title
+- twitter:description
+- twitter:image
+
+적용
+1. GitHub yeowoobang-new 저장소에 ZIP 안 파일 전체 덮어쓰기
+2. Commit
+3. GitHub Pages 재배포 완료 확인
+4. 카카오톡에서 다시 링크 공유
+
+참고
+카카오톡은 링크 미리보기를 캐시할 수 있어 변경 직후 예전 미리보기가 잠시 남을 수 있습니다.

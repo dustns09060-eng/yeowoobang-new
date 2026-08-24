@@ -32,10 +32,55 @@ async function parseZip(file){if(!file)throw Error("ZIP 파일을 선택해주�
 function classify(followers,following,members){const fs=new Set(followers),gs=new Set(following);const all=members.map(p=>({...p,status:fs.has(p.id)&&gs.has(p.id)?"mutual":!fs.has(p.id)&&gs.has(p.id)?"onlyMe":fs.has(p.id)&&!gs.has(p.id)?"fansOnly":"neither"}));result={all,mutual:all.filter(x=>x.status==="mutual"),onlyMe:all.filter(x=>x.status==="onlyMe"),fansOnly:all.filter(x=>x.status==="fansOnly"),neither:all.filter(x=>x.status==="neither")}}
 const label=s=>({mutual:"맞팔 완료",onlyMe:"나만 팔로우",fansOnly:"상대만 팔로우",neither:"서로 미팔로우"})[s]||s;
 async function analyze(){if(!period?.open)return toast("현재 맞팔확인 기간이 아닙니다.");const b=$("#analyzeBtn");try{b.disabled=true;b.textContent="분석 중...";$("#analysisStatus").textContent="맞팔리스트와 ZIP 파일을 비교하고 있어요.";const [parsed,base]=await Promise.all([parseZip($("#zipInput").files[0]),api("analysisMembers",{token})]);classify(parsed.followers,parsed.following,base.members);$("#summarySection").classList.remove("hidden");$("#analysisStatus").textContent=`분석 완료 · 맞팔리스트 ${base.members.length}명 기준`;renderSummary();showTab("all");toast("맞팔분석 완료")}catch(e){$("#analysisStatus").textContent="오류: "+e.message;toast("분석 실패")}finally{b.disabled=!period?.open;b.textContent="맞팔 분석 시작"}}
-function renderSummary(){$("#allCount").textContent=result.all.length;$("#mutualCount").textContent=result.mutual.length;$("#onlyMeCount").textContent=result.onlyMe.length;$("#fansOnlyCount").textContent=result.fansOnly.length;$("#neitherCount").textContent=result.neither.length}
+function renderSummary(){
+  const total=result.all.length||0;
+  const pct=n=>total?((n/total)*100).toFixed(1):"0.0";
+  $("#mutualCount").textContent=`${result.mutual.length}명`;
+  $("#onlyMeCount").textContent=`${result.onlyMe.length}명`;
+  $("#fansOnlyCount").textContent=`${result.fansOnly.length}명`;
+  $("#neitherCount").textContent=`${result.neither.length}명`;
+  $("#mutualPct").textContent=`${pct(result.mutual.length)}%`;
+  $("#onlyMePct").textContent=`${pct(result.onlyMe.length)}%`;
+  $("#fansOnlyPct").textContent=`${pct(result.fansOnly.length)}%`;
+  $("#neitherPct").textContent=`${pct(result.neither.length)}%`;
+  $("#matchRateLine").innerHTML=`단톡방 맞팔률 <b>${pct(result.mutual.length)}%</b> · ${result.mutual.length}/${total}명`;
+  $("#allTabCount").textContent=`(${result.all.length})`;
+  $("#mutualTabCount").textContent=`(${result.mutual.length})`;
+  $("#onlyMeTabCount").textContent=`(${result.onlyMe.length})`;
+  $("#fansOnlyTabCount").textContent=`(${result.fansOnly.length})`;
+  $("#neitherTabCount").textContent=`(${result.neither.length})`;
+}
 function filtered(){const q=norm($("#resultSearch").value);return(result[currentTab]||[]).filter(x=>!q||x.id.includes(q)||x.nickname.toLowerCase().includes(q))}
 function showTab(tab){currentTab=tab;$$("[data-result-tab]").forEach(b=>b.classList.toggle("active",b.dataset.resultTab===tab));renderList()}
-function renderList(){const rows=filtered();$("#resultList").innerHTML=rows.length?rows.map(x=>`<div class="result-row"><div><b>${x.no}. ${x.nickname}</b><a href="https://instagram.com/${x.id}/" target="_blank">@${x.id}</a></div><span class="status ${x.status}">${label(x.status)}</span></div>`).join(""):'<p class="muted">결과가 없습니다.</p>'}
+function renderList(){
+  const rows=filtered();
+  $("#resultList").innerHTML=rows.length?rows.map(x=>`
+    <div class="result-row screenshot-row">
+      <div class="row-no">${x.no}</div>
+      <div class="row-info">
+        <b>${x.nickname}</b>
+        <span>@${x.id}</span>
+        <small class="status-text ${x.status}">${label(x.status)}</small>
+      </div>
+      <a class="open-btn" href="https://instagram.com/${x.id}/" target="_blank" rel="noopener">↗ 열기</a>
+    </div>`).join(""):'<p class="muted empty-result">결과가 없습니다.</p>';
+}. ${x.nickname}</b><a href="https://instagram.com/${x.id}/" target="_blank">@${x.id}</a></div><span class="status ${x.status}">${label(x.status)}</span></div>`).join(""):'<p class="muted">결과가 없습니다.</p>'}
+function mismatchRows(){return result.all.filter(x=>x.status!=="mutual");}
+async function copyMismatch(){
+  const rows=mismatchRows();
+  if(!rows.length)return toast("미맞팔 회원이 없습니다.");
+  const text=rows.map(x=>`${x.no}. ${x.nickname}\t@${x.id}\t${label(x.status)}`).join("\n");
+  await navigator.clipboard.writeText(text);
+  toast(`미맞팔 ${rows.length}명 복사 완료`);
+}
+async function copyMentions(){
+  const rows=mismatchRows();
+  if(!rows.length)return toast("멘션할 미맞팔 회원이 없습니다.");
+  const text=rows.map(x=>`@${x.id}`).join(" ");
+  await navigator.clipboard.writeText(text);
+  toast(`@멘션 ${rows.length}명 복사 완료`);
+}
+
 async function copyResult(){const rows=filtered();if(!rows.length)return toast("복사할 결과가 없습니다.");const t=rows.map(x=>`${x.no}. ${x.nickname}\t@${x.id}\t${label(x.status)}`).join("\n");await navigator.clipboard.writeText(t);toast(`${rows.length}명 복사 완료`)}
 
 async function adminLogin(){try{const j=await api("adminLogin",{token,password:$("#adminPw").value});adminToken=j.adminToken;$("#adminAuth").classList.add("hidden");$("#adminPanel").classList.remove("hidden");$("#adminRole").textContent="운영진 인증 완료";$("#periodStart").value=j.period.start||"";$("#periodEnd").value=j.period.end||""}catch(e){$("#adminMsg").textContent=e.message}}
@@ -43,6 +88,9 @@ async function savePeriod(){try{const j=await api("savePeriod",{token,adminToken
 async function saveNotice(){try{const j=await api("saveNotice",{token,adminToken,title:$("#noticeTitle").value,content:$("#noticeBody").value});$("#noticeContent").textContent=j.notice||"등록된 공지가 없습니다.";toast(j.message)}catch(e){toast(e.message)}}
 async function changePw(){try{const j=await api("changeEntryPassword",{token,adminToken,currentPassword:$("#currentEntryPw").value,newPassword:$("#newEntryPw").value,confirmPassword:$("#confirmEntryPw").value});toast(j.message);$("#currentEntryPw").value=$("#newEntryPw").value=$("#confirmEntryPw").value=""}catch(e){toast(e.message)}}
 
+$("#copyMismatchBtn").onclick=copyMismatch;
+$("#copyMentionBtn").onclick=copyMentions;
+$("#reanalyzeBtn").onclick=()=>{$("#zipInput").value="";$("#summarySection").classList.add("hidden");$("#analysisStatus").textContent="";window.scrollTo({top:0,behavior:"smooth"});};
 $("#entryBtn").onclick=entry;$("#entryPw").onkeydown=e=>{if(e.key==="Enter")entry()};$("#analyzeBtn").onclick=analyze;$("#resultSearch").oninput=renderList;$("#copyResultBtn").onclick=copyResult;$$("[data-result-tab]").forEach(b=>b.onclick=()=>showTab(b.dataset.resultTab));
 $("#adminBtn").onclick=()=>$("#adminAuth").classList.remove("hidden");$("#adminLoginBtn").onclick=adminLogin;$("#savePeriodBtn").onclick=savePeriod;$("#saveNoticeBtn").onclick=saveNotice;$("#changeEntryPwBtn").onclick=changePw;
 $("#moreBtn").onclick=()=>$("#moreMenu").classList.remove("hidden");$("#logoutBtn").onclick=()=>{localStorage.removeItem("matchV24Token");location.reload()};$$("[data-close]").forEach(b=>b.onclick=()=>$("#"+b.dataset.close).classList.add("hidden"));
