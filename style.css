@@ -12,3 +12,28 @@
 .row-info b{display:block;font-size:17px;margin-bottom:3px}.row-info span{display:block;font-weight:800;font-size:13px}.status-text{display:block!important;margin-top:4px;font-size:11px!important;font-weight:900}
 .status-text.mutual{color:#17ad67}.status-text.onlyMe{color:#ff6b00}.status-text.fansOnly{color:#1686d9}.status-text.neither{color:#6f7482}
 .open-btn{text-decoration:none;border:1px solid #f4d8c6;background:#fff7ef;color:#f06d16;border-radius:999px;padding:10px 15px;font-size:12px;font-weight:900;white-space:nowrap}
+
+
+/* V2.6.3 - 상단 맞팔분석 기간 카드 슬림화 */
+#periodCard{
+  padding:20px 22px !important;
+  min-height:0 !important;
+}
+#periodCard .period-head{
+  margin-bottom:8px !important;
+  align-items:center !important;
+}
+#periodCard .period-head h2,
+#periodCard h2{
+  margin:0 !important;
+}
+#periodCard #periodRange{
+  margin:4px 0 0 !important;
+  line-height:1.35 !important;
+}
+@media (max-width:600px){
+  #periodCard{
+    padding:18px 20px !important;
+    border-radius:24px !important;
+  }
+}
