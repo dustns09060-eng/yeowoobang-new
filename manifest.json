@@ -1,7 +1,6 @@
 {
-  "name": "여우방 팔로우리스트 · 맞팔확인",
-  "short_name": "여우방",
-  "description": "여우방 회원 전용 팔로우리스트 · 맞팔확인",
+  "name": "여우방 맞팔확인",
+  "short_name": "맞팔확인",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",

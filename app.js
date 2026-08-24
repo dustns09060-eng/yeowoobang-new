@@ -1,69 +1,23 @@
 const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
-const API=()=>window.YW_CONFIG.API_URL; let token=localStorage.getItem("yw:new:token")||"", me=null, members=[], progress=Number(localStorage.getItem("yw:new:progress")||0), period=null;
-function toast(m){let t=$("#toast");t.textContent=m;t.classList.add("show");setTimeout(()=>t.classList.remove("show"),1700)}
-async function api(action,data={}){if(API().includes("PASTE_"))throw Error("config.js에 새 Apps Script /exec 주소를 입력해주세요.");let r=await fetch(API(),{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify({action,...data})});let j=await r.json();if(!j.ok)throw Error(j.message||"요청 실패");return j}
-function norm(v){return String(v||"").trim().replace(/^@+/,"").toLowerCase()}
-async function login(){try{$("#loginBtn").disabled=true;let j=await api("login",{instagramId:norm($("#loginId").value),password:$("#loginPw").value});token=j.token;me=j.member;localStorage.setItem("yw:new:token",token);await enter()}catch(e){$("#loginMsg").textContent=e.message}finally{$("#loginBtn").disabled=false}}
-async function enter(){if(!me){let j=await api("session",{token});me=j.member}$("#loginScreen").classList.add("hidden");$("#app").classList.remove("hidden");$("#adminBtn").classList.toggle("hidden",!me.isStaff);$("#myInfo").innerHTML=`<p><b>${me.nickname}</b></p><p>@${me.instagramId}</p>${String(me.memberId||"").startsWith("STAFF:")?"":`<p>MemberID ${me.memberId}</p>`}<p>권한 ${me.role||"일반회원"}</p>`;let d=await api("bootstrap",{token});members=d.members;period=d.period;renderMembers();renderPeriod();$("#noticeContent").textContent=d.notice||"등록된 공지가 없습니다."}
-async function restore(){if(!token)return;try{let j=await api("session",{token});me=j.member;await enter()}catch(e){localStorage.removeItem("yw:new:token");token=""}}
-function renderMembers(){let q=norm($("#searchInput").value), list=members.filter(x=>!q||String(x.no).includes(q)||x.nickname.toLowerCase().includes(q)||x.instagramId.includes(q));$("#followList").innerHTML=list.map((x,i)=>`<div class="member ${x.no<=progress?"done":""}"><div><b>${x.no}. ${x.nickname}</b><br><small>@${x.instagramId}</small></div><a href="https://www.instagram.com/${x.instagramId}/" target="_blank" rel="noopener">인스타</a></div>`).join("");let pct=members.length?Math.min(100,Math.round(progress/members.length*100)):0;$("#progressText").textContent=`진행률 ${pct}% · ${progress}/${members.length}`}
-function renderPeriod(){
-  const open=!!period?.open;
-  const label=period?.label||"현재 맞팔확인 기간이 아닙니다.";
-
-  // 맞팔투표
-  $("#matchBadge").textContent=open?"진행중":"기간 아님";
-  $("#matchPeriodText").textContent=label;
-  $("#doneVote").disabled=!open || !!me?.isStaff;
-  $("#delayVote").disabled=!open || !!me?.isStaff;
-  $("#voteState").textContent=me?.isStaff
-    ? "운영진 계정은 맞팔투표 대상이 아닙니다."
-    : (period?.myVote
-      ? `제출 완료: ${period.myVote}`
-      : (open?"완료 또는 지연을 선택해주세요.":"기간이 시작되면 투표할 수 있어요."));
-
-  // 맞팔분석 - 맞팔투표와 동일한 기간을 사용
-  $("#analysisBadge").textContent=open?"진행중":"기간 아님";
-  $("#analysisPeriodText").textContent=open?label:"현재 맞팔확인 기간이 아닙니다.";
-  $("#zipInput").disabled=!open;
-  $("#analyzeBtn").disabled=!open;
-  $("#analysisCard").classList.toggle("period-locked-card",!open);
-  $("#analysisCard").classList.toggle("period-open-card",open);
-  $("#analysisLockedGuide").textContent=open
-    ?"✅ 맞팔확인 기간입니다. ZIP 파일을 선택해 분석할 수 있어요."
-    :"🔒 맞팔확인 기간이 시작되면 맞팔분석도 함께 열립니다.";
-}
-async function vote(status){try{let j=await api("vote",{token,status});period.myVote=j.status;renderPeriod();toast(j.message)}catch(e){toast(e.message)}}
-function view(id){$$(".view").forEach(v=>v.classList.add("hidden"));$("#"+id).classList.remove("hidden");$$("nav button").forEach(b=>b.classList.toggle("active",b.dataset.view===id))}
-async function adminLogin(){try{let j=await api("adminLogin",{token,password:$("#adminPw").value});$("#adminModal").classList.add("hidden");$("#adminPanel").classList.remove("hidden");await adminLoad()}catch(e){$("#adminMsg").textContent=e.message}}
-async function adminLoad(){let j=await api("adminDashboard",{token,adminKey:$("#adminPw").value});$("#periodStart").value=j.start||"";$("#periodEnd").value=j.end||"";$("#adminStats").innerHTML=`전체 ${j.stats.total}명 · 완료 ${j.stats.done} · 지연 ${j.stats.delay} · 미제출 ${j.stats.missing}`;$("#adminVotes").innerHTML=j.rows.map(x=>`<div class="member"><span>${x.nickname} @${x.instagramId}</span><b>${x.status}</b></div>`).join("");window._adminRows=j.rows}
-async function savePeriod(){try{await api("savePeriod",{token,adminKey:$("#adminPw").value,start:$("#periodStart").value,end:$("#periodEnd").value});toast("맞팔확인 기간 저장 완료");let d=await api("bootstrap",{token});period=d.period;renderPeriod();await adminLoad()}catch(e){toast(e.message)}}
-function copyStatus(st){let t=(window._adminRows||[]).filter(x=>x.status===st).map(x=>`${x.nickname}\t@${x.instagramId}`).join("\n");navigator.clipboard.writeText(t);toast(t?"명단 복사 완료":"해당 회원이 없어요")}
-$("#loginBtn").onclick=login;$("#loginPw").onkeydown=e=>{if(e.key==="Enter")login()};$("#findPwBtn").onclick=()=>alert("통합프로그램의 비밀번호 찾기 기능을 이용해주세요.");$("#searchInput").oninput=renderMembers;
-$("#copy40").onclick=()=>{let s=members.filter(x=>x.no>progress).slice(0,40);navigator.clipboard.writeText(s.map(x=>`@${x.instagramId}`).join("\n"));if(s.length){progress=s[s.length-1].no;localStorage.setItem("yw:new:progress",progress);renderMembers()}toast(`${s.length}명 복사 완료`)};
-$("#next40").onclick=()=>{progress=Math.min(members.length,progress+40);localStorage.setItem("yw:new:progress",progress);renderMembers()};$("#resetProgress").onclick=()=>{progress=0;localStorage.setItem("yw:new:progress","0");renderMembers()};
-$("#doneVote").onclick=()=>vote("완료");$("#delayVote").onclick=()=>vote("지연");$("#analyzeBtn").onclick=()=>{
-  if(!period?.open) return toast("현재 맞팔확인 기간이 아닙니다.");
-  toast("ZIP 분석 모듈은 기존 분석 로직을 연결하는 자리입니다.");
-};
-$$("nav button").forEach(b=>b.onclick=()=>view(b.dataset.view));$("#themeBtn").onclick=()=>document.body.classList.toggle("dark");$("#menuBtn").onclick=()=>$("#drawer").classList.remove("hidden");$("#noticeBtn").onclick=()=>$("#noticeModal").classList.remove("hidden");$("#drawerNotice").onclick=()=>{$("#drawer").classList.add("hidden");$("#noticeModal").classList.remove("hidden")};$("#drawerMy").onclick=()=>{$("#drawer").classList.add("hidden");view("myView")};$("#logoutBtn").onclick=()=>{localStorage.removeItem("yw:new:token");location.reload()};$("#changePw").onclick=()=>toast("비밀번호 변경은 통합프로그램 계정과 연동합니다.");
-$("#adminBtn").onclick=()=>$("#adminModal").classList.remove("hidden");$("#adminLogin").onclick=adminLogin;$("#savePeriod").onclick=savePeriod;$("#copyDelay").onclick=()=>copyStatus("지연");$("#copyMissing").onclick=()=>copyStatus("미제출");$$("[data-close]").forEach(b=>b.onclick=()=>$("#"+b.dataset.close).classList.add("hidden"));
-restore();
-
-let deferredInstallPrompt=null;
-window.addEventListener("beforeinstallprompt",(e)=>{
-  e.preventDefault();
-  deferredInstallPrompt=e;
-});
-$("#installAppBtn").onclick=async()=>{
-  if(deferredInstallPrompt){
-    deferredInstallPrompt.prompt();
-    await deferredInstallPrompt.userChoice;
-    deferredInstallPrompt=null;
-    $("#drawer").classList.add("hidden");
-    return;
-  }
-  const isIOS=/iphone|ipad|ipod/i.test(navigator.userAgent);
-  if(isIOS) alert("Safari 하단 공유 버튼 → '홈 화면에 추가'를 눌러주세요.");
-  else alert("브라우저 메뉴에서 '홈 화면에 추가' 또는 '앱 설치'를 선택해주세요.");
-};
+let token=localStorage.getItem("matchV2Token")||"", me=null, period=null, adminRows=[], installPrompt=null;
+const api=async(action,data={})=>{const r=await fetch(window.APP_CONFIG.apiUrl,{method:"POST",body:JSON.stringify({action,...data})});const j=await r.json();if(!j.ok)throw Error(j.message||"오류가 발생했습니다.");return j};
+const toast=t=>{const x=$("#toast");x.textContent=t;x.classList.remove("hidden");setTimeout(()=>x.classList.add("hidden"),2200)};
+function showApp(){ $("#loginScreen").classList.add("hidden");$("#app").classList.remove("hidden");$("#adminBtn").classList.toggle("hidden",!me.isStaff);$("#myInfo").innerHTML=`<p><b>${me.nickname}</b></p><p>@${me.instagramId}</p><p>권한 ${me.role||"일반회원"}</p>`}
+async function login(){try{const j=await api("login",{instagramId:$("#loginId").value,password:$("#loginPw").value});token=j.token;me=j.member;localStorage.setItem("matchV2Token",token);showApp();await boot()}catch(e){$("#loginMsg").textContent=e.message;if(e.message.includes("운영진 비밀번호"))$("#staffPwWrap").classList.remove("hidden")}}
+async function resume(){if(!token)return;try{const j=await api("session",{token});me=j.member;showApp();await boot()}catch(e){localStorage.removeItem("matchV2Token");token=""}}
+async function boot(){const j=await api("bootstrap",{token});period=j.period;$("#noticeContent").textContent=j.notice||"등록된 공지가 없습니다.";renderPeriod()}
+function renderPeriod(){const open=!!period?.open;$("#periodBadge").textContent=open?"진행중":"기간 아님";$("#periodText").textContent=period?.label||"현재 맞팔확인 기간이 아닙니다.";$("#doneVote").disabled=!open||me?.isStaff;$("#delayVote").disabled=!open||me?.isStaff;$("#zipInput").disabled=!open;$("#analyzeBtn").disabled=!open;$("#analysisGuide").textContent=open?"맞팔확인 기간입니다. 인스타그램 ZIP 파일을 선택해주세요.":"맞팔확인 기간이 시작되면 분석 기능도 함께 열립니다.";$("#voteState").textContent=me?.isStaff?"운영진 계정은 투표 대상이 아닙니다.":period?.myVote?`제출 완료: ${period.myVote}`:open?"완료 또는 지연을 선택해주세요.":"기간이 시작되면 투표할 수 있어요."}
+async function vote(status){try{const j=await api("vote",{token,status});toast(j.message);await boot()}catch(e){toast(e.message)}}
+async function adminLogin(){try{const j=await api("adminLogin",{token,password:$("#adminPw").value});$("#adminAuth").classList.add("hidden");$("#adminPanel").classList.remove("hidden");$("#adminRole").textContent=`${j.role} · ${j.name}`;await adminLoad()}catch(e){$("#adminMsg").textContent=e.message}}
+async function adminLoad(){const j=await api("adminDashboard",{token,adminKey:$("#adminPw").value});$("#periodStart").value=j.start||"";$("#periodEnd").value=j.end||"";$("#adminStats").textContent=`전체 ${j.stats.total}명 · 완료 ${j.stats.done} · 지연 ${j.stats.delay} · 미제출 ${j.stats.missing}`;adminRows=j.rows;$("#adminVotes").innerHTML=j.rows.map(x=>`<div class="list-row"><span><b>${x.no}. ${x.nickname}</b><small>@${x.instagramId}</small></span><em>${x.status}</em></div>`).join("")}
+async function savePeriod(){try{const j=await api("savePeriod",{token,adminKey:$("#adminPw").value,start:$("#periodStart").value,end:$("#periodEnd").value});toast(j.message);await adminLoad();await boot()}catch(e){toast(e.message)}}
+function copyStatus(s){navigator.clipboard.writeText(adminRows.filter(x=>x.status===s).map(x=>`${x.nickname}\t@${x.instagramId}`).join("\n"));toast(`${s} 명단을 복사했습니다.`)}
+async function searchMembers(){try{const j=await api("adminMemberSearch",{token,adminKey:$("#adminPw").value,query:$("#memberQuery").value});$("#memberResults").innerHTML=j.rows.map(x=>`<div class="list-row"><span><b>${x.no}. ${x.nickname}</b><small>@${x.instagramId}</small></span><em>${x.voteStatus}</em></div>`).join("")||'<p class="muted">검색 결과가 없습니다.</p>'}catch(e){toast(e.message)}}
+async function saveNotice(){try{const j=await api("adminSaveNotice",{token,adminKey:$("#adminPw").value,title:$("#noticeTitle").value,content:$("#noticeBody").value});toast(j.message);await boot()}catch(e){toast(e.message)}}
+async function loadLogs(){try{const j=await api("adminLogs",{token,adminKey:$("#adminPw").value});$("#logList").innerHTML=j.rows.map(x=>`<div class="log-row"><small>${x.date}</small><b>${x.action}</b><span>${x.detail}</span></div>`).join("")||'<p class="muted">로그 없음</p>'}catch(e){toast(e.message)}}
+$("#loginBtn").onclick=login;$("#loginId").onkeydown=e=>{if(e.key==="Enter")login()};$("#doneVote").onclick=()=>vote("완료");$("#delayVote").onclick=()=>vote("지연");
+$("#analyzeBtn").onclick=()=>{if(!period?.open)return toast("현재 맞팔확인 기간이 아닙니다.");toast("ZIP 맞팔분석 모듈 연결 위치입니다.")};
+$("#adminBtn").onclick=()=>$("#adminAuth").classList.remove("hidden");$("#adminLoginBtn").onclick=adminLogin;$("#savePeriodBtn").onclick=savePeriod;$("#copyDelay").onclick=()=>copyStatus("지연");$("#copyMissing").onclick=()=>copyStatus("미제출");$("#memberSearchBtn").onclick=searchMembers;$("#saveNoticeBtn").onclick=saveNotice;$("#loadLogsBtn").onclick=loadLogs;
+$("#moreBtn").onclick=()=>$("#moreMenu").classList.remove("hidden");$("#myBtn").onclick=()=>$("#myModal").classList.remove("hidden");$("#logoutBtn").onclick=()=>{localStorage.removeItem("matchV2Token");location.reload()};$$("[data-close]").forEach(b=>b.onclick=()=>$("#"+b.dataset.close).classList.add("hidden"));
+window.addEventListener("beforeinstallprompt",e=>{e.preventDefault();installPrompt=e});$("#installBtn").onclick=async()=>{if(installPrompt){installPrompt.prompt();await installPrompt.userChoice;installPrompt=null}else alert(/iphone|ipad|ipod/i.test(navigator.userAgent)?"Safari 공유 → 홈 화면에 추가를 눌러주세요.":"브라우저 메뉴에서 앱 설치/홈 화면에 추가를 선택해주세요.")};
+resume();

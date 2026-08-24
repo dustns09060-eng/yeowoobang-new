@@ -2,97 +2,47 @@
 <html lang="ko">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>여우방 맞팔확인</title>
+<meta name="description" content="여우방 회원 전용 맞팔확인">
 <meta name="theme-color" content="#fff7fa">
-<title>여우방 팔로우리스트 · 맞팔확인</title>
-
-<meta name="description" content="여우방 회원 전용 팔로우리스트 · 맞팔확인 프로그램">
-<meta name="application-name" content="여우방">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="여우방">
-<link rel="apple-touch-icon" href="apple-touch-icon.png">
-<link rel="icon" type="image/png" sizes="96x96" href="favicon-96.png">
-
-<meta property="og:type" content="website">
-<meta property="og:title" content="여우방 팔로우리스트 · 맞팔확인">
-<meta property="og:description" content="여우방 회원 전용 팔로우리스트와 맞팔확인을 한 곳에서 이용해요.">
+<meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="여우방 맞팔확인">
+<link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta property="og:type" content="website"><meta property="og:title" content="여우방 맞팔확인">
+<meta property="og:description" content="여우방 회원 전용 맞팔확인 프로그램">
 <meta property="og:image" content="https://dustns09060-eng.github.io/yeowoobang-new/kakao-preview.png">
-<meta property="og:url" content="https://dustns09060-eng.github.io/yeowoobang-new/">
-<meta property="og:site_name" content="여우방">
-<meta property="og:locale" content="ko_KR">
-
-<link rel="manifest" href="manifest.json"><link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
-<div id="loginScreen" class="login-screen">
-  <div class="login-card">
-    <img class="login-logo" src="app-icon-192.png" alt="여우방 로고"><h1>여우방</h1><p>팔로우리스트 · 맞팔확인</p>
-    <input id="loginId" autocomplete="username" placeholder="인스타 아이디">
-    <input id="loginPw" type="password" autocomplete="current-password" placeholder="비밀번호">
-    <button id="loginBtn" class="primary">로그인</button>
-    <button id="findPwBtn" class="text-btn">비밀번호 찾기</button>
-    <div id="loginMsg" class="msg"></div>
-  </div>
-</div>
-
+<section id="loginScreen" class="login-screen">
+ <div class="login-card">
+  <img class="login-logo" src="app-icon-192.png"><h1>여우방</h1><h2>맞팔확인</h2>
+  <p>맞팔리스트에 등록된 인스타 아이디로 이용할 수 있어요.</p>
+  <input id="loginId" placeholder="@인스타아이디" autocomplete="username">
+  <div id="staffPwWrap" class="hidden"><input id="loginPw" type="password" placeholder="운영진 비밀번호"></div>
+  <button id="loginBtn" class="primary">로그인</button><p id="loginMsg" class="error"></p>
+ </div>
+</section>
 <div id="app" class="hidden">
-<header>
-  <div class="brand"><img src="app-icon-192.png" alt="여우방 로고"><b>여우방</b></div>
-  <div class="header-actions">
-    <button id="noticeBtn">🔔</button><button id="adminBtn" class="hidden">⚙️ 운영진모드</button>
-    <button id="themeBtn">🌙</button><button id="menuBtn">⋯</button>
-  </div>
-</header>
+<header><div class="brand"><img src="app-icon-192.png"><b>여우방 맞팔확인</b></div><div class="header-actions"><button id="adminBtn" class="hidden">⚙️ 운영진모드</button><button id="moreBtn">⋯</button></div></header>
 <main>
-<section id="followView" class="view">
-  <div class="card"><div class="row"><div><h2>👥 팔로우리스트</h2><p id="progressText">진행률 0%</p></div><button id="resetProgress" class="soft">진행 초기화</button></div>
-  <input id="searchInput" placeholder="번호 · 닉네임 · 인스타 아이디 검색">
-  <div class="row"><button id="copy40" class="primary smallbtn">현재 위치부터 40명 복사</button><button id="next40" class="soft">다음 40명</button></div></div>
-  <div id="followList"></div>
-</section>
-
-<section id="matchView" class="view hidden">
-  <div class="card">
-    <div class="row"><div><h2>↔️ 맞팔확인</h2><p id="matchPeriodText">기간 확인 중</p></div><span id="matchBadge" class="badge">대기</span></div>
-    <div class="vote-grid"><button id="doneVote">✅ 완료</button><button id="delayVote">⏰ 지연</button></div>
-    <p id="voteState" class="muted">제출 상태를 확인 중입니다.</p>
-  </div>
-  <div id="analysisCard" class="card period-locked-card">
-    <div class="row">
-      <div>
-        <h3>맞팔분석</h3>
-        <p id="analysisPeriodText" class="muted">현재 맞팔확인 기간이 아닙니다.</p>
-      </div>
-      <span id="analysisBadge" class="badge">기간 아님</span>
-    </div>
-    <div id="analysisLockedGuide" class="period-lock-guide">🔒 맞팔확인 기간이 시작되면 맞팔분석도 함께 열립니다.</div>
-    <input id="zipInput" type="file" accept=".zip" disabled>
-    <button id="analyzeBtn" class="primary" disabled>맞팔 분석 시작</button>
-    <div id="analysisResult"></div>
-  </div>
-</section>
-
-<section id="myView" class="view hidden">
-  <div class="card"><h2>👤 마이페이지</h2><div id="myInfo"></div></div>
-</section>
+ <section class="card hero"><span id="periodBadge" class="badge">기간 아님</span><h2>맞팔확인</h2><p id="periodText">현재 맞팔확인 기간이 아닙니다.</p></section>
+ <section class="card"><h3>↔️ 맞팔투표</h3><p class="muted">맞팔을 완료했다면 완료, 시간이 더 필요하다면 지연을 선택해주세요.</p><div class="vote-grid"><button id="doneVote">✅ 완료</button><button id="delayVote">⏰ 지연</button></div><p id="voteState" class="state"></p></section>
+ <section id="analysisCard" class="card"><h3>🔎 맞팔분석</h3><p id="analysisGuide" class="muted">맞팔확인 기간 중에만 사용할 수 있어요.</p><input id="zipInput" type="file" accept=".zip" disabled><button id="analyzeBtn" class="primary" disabled>맞팔 분석 시작</button><div id="analysisResult"></div></section>
+ <section class="card"><h3>📢 공지</h3><pre id="noticeContent">등록된 공지가 없습니다.</pre></section>
 </main>
-<nav><button data-view="followView" class="active">👥<span>팔로우리스트</span></button><button data-view="matchView">↔️<span>맞팔확인</span></button><button data-view="myView">👤<span>마이페이지</span></button></nav>
+<nav><button data-tab="home">↔️<span>맞팔확인</span></button><button id="myBtn">👤<span>마이</span></button></nav>
 </div>
-
-<div id="drawer" class="overlay hidden"><div class="sheet"><div class="row"><h3>내 메뉴</h3><button data-close="drawer">✕</button></div>
-<button id="installAppBtn">📱 앱 설치</button><button id="drawerMy">👤 마이페이지</button><button id="drawerNotice">📢 공지사항</button><button id="changePw">🔐 비밀번호 변경</button><button id="logoutBtn">🚪 로그아웃</button></div></div>
-<div id="noticeModal" class="overlay hidden"><div class="sheet"><div class="row"><h3>📢 공지사항</h3><button data-close="noticeModal">✕</button></div><div id="noticeContent"></div></div></div>
-<div id="adminModal" class="overlay hidden"><div class="sheet"><div class="row"><h3>⚙️ 운영진모드</h3><button data-close="adminModal">✕</button></div><input id="adminPw" type="password" placeholder="운영진 비밀번호"><button id="adminLogin" class="primary">운영진모드 전환</button><div id="adminMsg" class="msg"></div></div></div>
-<div id="adminPanel" class="overlay hidden"><div class="sheet large"><div class="row"><h3>⚙️ 운영진모드</h3><button data-close="adminPanel">✕</button></div>
-<div class="card inner"><h4>맞팔확인 기간</h4><input id="periodStart" type="datetime-local"><input id="periodEnd" type="datetime-local"><button id="savePeriod" class="primary">기간 저장</button></div>
-<div class="card inner"><h4>맞팔투표 현황</h4><div id="adminStats"></div><div class="row"><button id="copyDelay" class="soft">지연 복사</button><button id="copyMissing" class="soft">미제출 복사</button></div><div id="adminVotes"></div></div>
+<div id="moreMenu" class="overlay hidden"><div class="sheet"><button id="installBtn">📱 앱 설치</button><button id="logoutBtn">로그아웃</button><button data-close="moreMenu">닫기</button></div></div>
+<div id="myModal" class="overlay hidden"><div class="sheet"><div class="row"><h3>마이페이지</h3><button data-close="myModal">✕</button></div><div id="myInfo"></div></div></div>
+<div id="adminAuth" class="overlay hidden"><div class="sheet"><div class="row"><h3>⚙️ 운영진모드</h3><button data-close="adminAuth">✕</button></div><input id="adminPw" type="password" placeholder="운영진 비밀번호"><button id="adminLoginBtn" class="primary">운영진모드 열기</button><p id="adminMsg" class="error"></p></div></div>
+<div id="adminPanel" class="overlay hidden"><div class="sheet large"><div class="row"><div><small id="adminRole"></small><h3>⚙️ 맞팔 운영진모드</h3></div><button data-close="adminPanel">✕</button></div>
+ <div class="admin-block"><h4>맞팔기간 설정</h4><div class="two-col"><input id="periodStart" type="datetime-local"><input id="periodEnd" type="datetime-local"></div><button id="savePeriodBtn" class="primary">기간 저장</button></div>
+ <div class="admin-block"><h4>맞팔 현황</h4><div id="adminStats"></div><div class="row"><button id="copyDelay">지연 복사</button><button id="copyMissing">미제출 복사</button></div><div id="adminVotes"></div></div>
+ <div class="admin-block"><h4>회원 검색</h4><div class="search-row"><input id="memberQuery" placeholder="닉네임 · @아이디 · 번호"><button id="memberSearchBtn">검색</button></div><div id="memberResults"></div></div>
+ <div class="admin-block"><h4>공지</h4><input id="noticeTitle" placeholder="제목"><textarea id="noticeBody" rows="4" placeholder="내용"></textarea><button id="saveNoticeBtn" class="primary">공지 저장</button></div>
+ <div class="admin-block"><div class="row"><h4>운영로그</h4><button id="loadLogsBtn">불러오기</button></div><div id="logList"></div></div>
 </div></div>
-<div id="toast" class="toast"></div>
-<script src="config.js"></script><script src="app.js"></script>
-
-<script>
-if ("serviceWorker" in navigator) {
-  window.addEventListener("load", () => navigator.serviceWorker.register("./sw.js").catch(()=>{}));
-}
-</script>
+<div id="toast" class="toast hidden"></div>
+<script>window.APP_CONFIG={apiUrl:"https://script.google.com/macros/s/AKfycbxXmIenXX9fIP_MhmSWdvLRUQrOV2klX1HpUWnYgnCmbbw5f3beUh0OWuLf16TBcowb/exec"}</script><script src="app.js"></script>
+<script>if("serviceWorker"in navigator)window.addEventListener("load",()=>navigator.serviceWorker.register("./sw.js").catch(()=>{}));</script>
 </body></html>
