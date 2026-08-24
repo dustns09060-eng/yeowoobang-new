@@ -1,0 +1,8 @@
+{
+  "name": "여우방 팔로우리스트 맞팔확인",
+  "short_name": "여우방",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#fff8fb",
+  "theme_color": "#fff7fa"
+}

@@ -1,0 +1,1 @@
+window.YW_CONFIG={API_URL:"https://script.google.com/macros/s/AKfycbxXmIenXX9fIP_MhmSWdvLRUQrOV2klX1HpUWnYgnCmbbw5f3beUh0OWuLf16TBcowb/exec"};

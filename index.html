@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#fff7fa">
+<title>여우방 팔로우리스트 · 맞팔확인</title>
+<link rel="manifest" href="manifest.json"><link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="loginScreen" class="login-screen">
+  <div class="login-card">
+    <div class="fox">🦊</div><h1>여우방</h1><p>팔로우리스트 · 맞팔확인</p>
+    <input id="loginId" autocomplete="username" placeholder="인스타 아이디">
+    <input id="loginPw" type="password" autocomplete="current-password" placeholder="비밀번호">
+    <button id="loginBtn" class="primary">로그인</button>
+    <button id="findPwBtn" class="text-btn">비밀번호 찾기</button>
+    <div id="loginMsg" class="msg"></div>
+  </div>
+</div>
+
+<div id="app" class="hidden">
+<header>
+  <div class="brand"><span>🦊</span><b>여우방</b></div>
+  <div class="header-actions">
+    <button id="noticeBtn">🔔</button><button id="adminBtn" class="hidden">⚙️ 운영진</button>
+    <button id="themeBtn">🌙</button><button id="menuBtn">⋯</button>
+  </div>
+</header>
+<main>
+<section id="followView" class="view">
+  <div class="card"><div class="row"><div><h2>👥 팔로우리스트</h2><p id="progressText">진행률 0%</p></div><button id="resetProgress" class="soft">진행 초기화</button></div>
+  <input id="searchInput" placeholder="번호 · 닉네임 · 인스타 아이디 검색">
+  <div class="row"><button id="copy40" class="primary smallbtn">현재 위치부터 40명 복사</button><button id="next40" class="soft">다음 40명</button></div></div>
+  <div id="followList"></div>
+</section>
+
+<section id="matchView" class="view hidden">
+  <div class="card">
+    <div class="row"><div><h2>↔️ 맞팔확인</h2><p id="matchPeriodText">기간 확인 중</p></div><span id="matchBadge" class="badge">대기</span></div>
+    <div class="vote-grid"><button id="doneVote">✅ 완료</button><button id="delayVote">⏰ 지연</button></div>
+    <p id="voteState" class="muted">제출 상태를 확인 중입니다.</p>
+  </div>
+  <div class="card">
+    <h3>맞팔분석</h3><p class="muted">맞팔확인 기간 중에만 이용할 수 있어요.</p>
+    <input id="zipInput" type="file" accept=".zip" disabled>
+    <button id="analyzeBtn" class="primary" disabled>맞팔 분석 시작</button>
+    <div id="analysisResult"></div>
+  </div>
+</section>
+
+<section id="myView" class="view hidden">
+  <div class="card"><h2>👤 마이페이지</h2><div id="myInfo"></div></div>
+</section>
+</main>
+<nav><button data-view="followView" class="active">👥<span>팔로우리스트</span></button><button data-view="matchView">↔️<span>맞팔확인</span></button><button data-view="myView">👤<span>마이페이지</span></button></nav>
+</div>
+
+<div id="drawer" class="overlay hidden"><div class="sheet"><div class="row"><h3>내 메뉴</h3><button data-close="drawer">✕</button></div>
+<button id="drawerMy">👤 마이페이지</button><button id="drawerNotice">📢 공지사항</button><button id="changePw">🔐 비밀번호 변경</button><button id="logoutBtn">🚪 로그아웃</button></div></div>
+<div id="noticeModal" class="overlay hidden"><div class="sheet"><div class="row"><h3>📢 공지사항</h3><button data-close="noticeModal">✕</button></div><div id="noticeContent"></div></div></div>
+<div id="adminModal" class="overlay hidden"><div class="sheet"><div class="row"><h3>⚙️ 운영진 인증</h3><button data-close="adminModal">✕</button></div><input id="adminPw" type="password" placeholder="운영진 비밀번호"><button id="adminLogin" class="primary">운영진모드 전환</button><div id="adminMsg" class="msg"></div></div></div>
+<div id="adminPanel" class="overlay hidden"><div class="sheet large"><div class="row"><h3>⚙️ 운영진모드</h3><button data-close="adminPanel">✕</button></div>
+<div class="card inner"><h4>맞팔확인 기간</h4><input id="periodStart" type="datetime-local"><input id="periodEnd" type="datetime-local"><button id="savePeriod" class="primary">기간 저장</button></div>
+<div class="card inner"><h4>맞팔투표 현황</h4><div id="adminStats"></div><div class="row"><button id="copyDelay" class="soft">지연 복사</button><button id="copyMissing" class="soft">미제출 복사</button></div><div id="adminVotes"></div></div>
+</div></div>
+<div id="toast" class="toast"></div>
+<script src="config.js"></script><script src="app.js"></script>
+</body></html>
